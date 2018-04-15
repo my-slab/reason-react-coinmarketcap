@@ -1,5 +1,5 @@
 type route =
-  | Detail(string)
+  /* | Detail(string) */
   | List;
 
 type action =
@@ -14,7 +14,7 @@ let make = _children => {
   initialState: () => {route: List},
   reducer: (action, _state) =>
     switch action {
-    | Navigate(Detail(code)) => ReasonReact.Update({route: Detail(code)})
+    /* | Navigate(Detail(code)) => ReasonReact.Update({route: Detail(code)}) */
     | Navigate(List) => ReasonReact.Update({route: List})
     },
   subscriptions: self => [
@@ -23,7 +23,7 @@ let make = _children => {
         ReasonReact.Router.watchUrl(url =>
           switch url.path {
           | [] => self.send(Navigate(List))
-          | [symbol] => self.send(Navigate(Detail(symbol)))
+          /* | [symbol] => self.send(Navigate(Detail(symbol))) */
           | _ => self.send(Navigate(List))
           }
         ),
@@ -34,7 +34,7 @@ let make = _children => {
     <div>
       (
         switch self.state.route {
-        | Detail(symbol) => <Text value=symbol />
+        /* | Detail(symbol) => <Text value=symbol /> */
         | List => <Page title="Cryptocurrency Market Capitalizations" />
         }
       )
