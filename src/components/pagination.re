@@ -4,20 +4,23 @@ type step =
 
 let component = ReasonReact.statelessComponent("Pagination");
 
+let page_size = 100;
+
 let step = action =>
   (
     switch action {
-    | Next(limit, offset) => [
-        string_of_int(limit),
-        string_of_int(offset + 100)
-      ]
-    | Previous(limit, offset) => [
-        string_of_int(limit),
-        string_of_int(offset - 100 < 0 ? 0 : offset - 100)
-      ]
+    | Next(limit, offset) =>
+      let limit = string_of_int(limit);
+      let offset = string_of_int(offset + page_size);
+      (limit, offset);
+    | Previous(limit, offset) =>
+      let limit = string_of_int(limit);
+      let offset =
+        string_of_int(offset - page_size < 0 ? 0 : offset - page_size);
+      (limit, offset);
     }
   )
-  |> (([limit, offset]) => "?limit=" ++ limit ++ "&offset=" ++ offset);
+  |> (((limit, offset)) => "?limit=" ++ limit ++ "&offset=" ++ offset);
 
 let make = (~limit: int, ~offset: int, _children) => {
   ...component,
@@ -29,7 +32,7 @@ let make = (~limit: int, ~offset: int, _children) => {
           onClick=(
             event => {
               ReactEventRe.Mouse.preventDefault(event);
-              ReasonReact.Router.push(step(Next(limit, offset)));
+              Next(limit, offset) |> step |> ReasonReact.Router.push;
             }
           )>
           <Text value="Next 100" />
@@ -39,7 +42,7 @@ let make = (~limit: int, ~offset: int, _children) => {
           onClick=(
             event => {
               ReactEventRe.Mouse.preventDefault(event);
-              ReasonReact.Router.push(step(Previous(limit, offset)));
+              Previous(limit, offset) |> step |> ReasonReact.Router.push;
             }
           )>
           <Text value="Previous 100" />

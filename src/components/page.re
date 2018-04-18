@@ -8,7 +8,7 @@ type action =
 
 type state = {search};
 
-let search_to_tuple = (search: string) : search =>
+let parse_search = (search: string) : search =>
   Js.String.split("&", search)
   |> Array.to_list
   |> List.fold_left(
@@ -40,10 +40,8 @@ let make = (~title: string, _children) => {
     Sub(
       () =>
         ReasonReact.Router.watchUrl(url => {
-          let result = url.search |> search_to_tuple;
-          switch url.search {
-          | _ => self.send(Navigate(result))
-          };
+          let result = url.search |> parse_search;
+          Navigate(result) |> self.send;
         }),
       ReasonReact.Router.unwatchUrl
     )
