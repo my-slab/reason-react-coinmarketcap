@@ -4,9 +4,8 @@ type step =
 
 let component = ReasonReact.statelessComponent("Pagination");
 
-let page_size = 100;
-
-let step = action =>
+let step = action => {
+  let page_size = 100;
   (
     switch action {
     | Next(limit, offset) =>
@@ -21,6 +20,7 @@ let step = action =>
     }
   )
   |> (((limit, offset)) => "?limit=" ++ limit ++ "&offset=" ++ offset);
+};
 
 let make = (~limit: int, ~offset: int, _children) => {
   ...component,

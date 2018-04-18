@@ -8,6 +8,11 @@ type action =
 
 type state = {search};
 
+let parse_value = (elem, ~default) =>
+  try (int_of_string(elem)) {
+  | Failure(_reason) => default
+  };
+
 let parse_search = (search: string) : search =>
   Js.String.split("&", search)
   |> Array.to_list
@@ -19,8 +24,14 @@ let parse_search = (search: string) : search =>
          |> (
            split =>
              switch split {
-             | ["offset", value] => {...acc, offset: int_of_string(value)}
-             | ["limit", value] => {...acc, limit: int_of_string(value)}
+             | ["offset", value] => {
+                 ...acc,
+                 offset: parse_value(value, ~default=0)
+               }
+             | ["limit", value] => {
+                 ...acc,
+                 limit: parse_value(value, ~default=100)
+               }
              | _ => acc
              }
          ),
